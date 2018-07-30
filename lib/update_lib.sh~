@@ -1,0 +1,17 @@
+#!/bin/sh
+
+cd ../../genericdp/
+make genericdp
+cd ../healthcare/
+make healthcare
+cd ../healthcaredp/lib
+
+rm -r healthcare
+rm -r genericdp
+rm libhealthcare.so
+rm libgenericdp.so
+
+cp -r ../../genericdp/include/genericdp .
+cp ../../genericdp/lib/libgenericdp.so .
+cp -r ../../healthcare/include/healthcare .
+cp ../../healthcare/lib/libhealthcare.so .
