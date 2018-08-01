@@ -7,7 +7,7 @@ using namespace boost::math;
 namespace bidding {
 
 FirstPriceAuction::FirstPriceAuction(
-    std::vector<uniform_distribution<>> value_dists)
+    std::vector<Distribution> value_dists)
     : bid_funcs_(value_dists.size()),
       inv_bid_funcs_(value_dists.size()),
       value_dists_(value_dists),
@@ -25,7 +25,7 @@ double FirstPriceAuction::GetFitness(const PiecewiseLinearFunction& bid_func,
       [this, bid_func, id](double value) {
         return GetIntegrand(bid_func, id, value);
       },
-      value_dists_[id].lower(), value_dists_[id].upper(), 0, 0);
+      lower(value_dists_[id]), upper(value_dists_[id]), 0, 0);
 }
 
 double FirstPriceAuction::GetIntegrand(const PiecewiseLinearFunction& bid_func,
