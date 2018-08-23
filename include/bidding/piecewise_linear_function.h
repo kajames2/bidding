@@ -1,33 +1,33 @@
 #ifndef _BIDDING_PIECEWISE_LINEAR_FUNCTION_
 #define _BIDDING_PIECEWISE_LINEAR_FUNCTION_
 
+#include <ostream>
 #include <vector>
 
+#include "bidding/interval.h"
 #include "bidding/line_segment.h"
-#include "bidding/range.h"
 
 namespace bidding {
 
 class PiecewiseLinearFunction {
  public:
   PiecewiseLinearFunction() {}
-
-  PiecewiseLinearFunction(std::vector<float> ys, Range range);
-  LineSegment GetLine(double x) const;
-  LineSegment GetLineCache(double x) const;
-  PiecewiseLinearFunction GetInverseFunction() const;
-  double GetBid(double x) const;
+  PiecewiseLinearFunction(const std::vector<float>& ys, Interval interval);
+  PiecewiseLinearFunction(const std::vector<float>& xs, const std::vector<float>& ys);
+  virtual LineSegment GetLine(float x) const;
+  float GetBid(float x) const;
   friend std::size_t hash_value(const PiecewiseLinearFunction& s);
   friend bool operator==(const PiecewiseLinearFunction& g1,
                          const PiecewiseLinearFunction& g2);
-
- private:
+  friend std::ostream& operator<<(std::ostream& os,
+                                  const PiecewiseLinearFunction& pl);
   PiecewiseLinearFunction(std::vector<LineSegment> segments);
+  float operator()(float x) const { return GetBid(x); }
+  std::vector<LineSegment> GetSegments() const { return segments_; }
+ protected:
   std::vector<LineSegment> segments_;
-  Range range_;
-  mutable int cache_ind_ = 0;
+  Interval interval_;
 };
-
 bool operator==(const PiecewiseLinearFunction& g1,
                 const PiecewiseLinearFunction& g2);
 std::size_t hash_value(const PiecewiseLinearFunction& s);
